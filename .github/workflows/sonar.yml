@@ -38,7 +38,7 @@ permissions:
   pull-requests: read # allows SonarCloud to decorate PRs with analysis results
 
 jobs:
-  SonarCloud:
+  SonarCloud_api:
     name: SonarCloud
     runs-on: ubuntu-latest
     steps:
@@ -54,8 +54,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        #with:
-        # Additional arguments for the sonarcloud scanner
+        with:
+          # Additional arguments for the sonarcloud scanner
+          projectBaseDir: api/
         #args:
         # Unique keys of your project and organization. You can find them in SonarCloud > Information (bottom-left menu)
         # mandatory

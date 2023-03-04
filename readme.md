@@ -1,6 +1,6 @@
 # Serve Node-TypeScrip-Jest
 
-## Desde un proyecto previo
+## Install Desde un proyecto previo
 
 ```shell
 npm i
@@ -33,3 +33,13 @@ Añadimos:
 - jest / @types/jest
 - ts-jest
 - jest-ts-webcompat-resolver
+
+## Add CI/CD
+
+- Husky hooks
+- GitHub Actions with Audit & SonarCloud
+- Carpeta src
+
+Nueva rama feature/config
+Conexión del repo a SonarCloud
+Creación de la PR
