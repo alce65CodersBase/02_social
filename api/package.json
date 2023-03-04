@@ -1,0 +1,26 @@
+{
+  "name": "social_network_api",
+  "version": "1.0.0",
+  "description": "Node Server for a social network",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "cross-env DEBUG=W6* PORT=4500 node ./dist/index.js -w",
+    "start:mon": "cross-env DEBUG=W6* PORT=4500 nodemon ./dist/index.js",
+    "build": "tsc -w",
+    "test": "jest --watchAll --coverage",
+    "test:prod": "jest --watchAll --coverage --watchAll=false --passWithNoTests"
+  },
+  "keywords": [
+    "Node",
+    "Server",
+    "Express",
+    "Jest",
+    "Typescript"
+  ],
+  "author": "Alejandro Cerezo",
+  "license": "ISC",
+  "prettier": {
+    "singleQuote": true
+  }
+}
