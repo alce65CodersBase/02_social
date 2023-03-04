@@ -19,6 +19,4 @@ jobs:
         run: npm ci
       - name: Testing coverage
         run: npm run test:prod #Change for a valid npm script
-        with:
-          # Additional arguments for the sonarcloud scanner
-          projectBaseDir: api/
+        working-directory: api/
