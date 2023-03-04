@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  Test:
+  Test_api:
     name: Tests
     runs-on: ubuntu-latest
     steps:
@@ -19,4 +19,6 @@ jobs:
         run: npm ci
       - name: Testing coverage
         run: npm run test:prod #Change for a valid npm script
-
+        with:
+          # Additional arguments for the sonarcloud scanner
+          projectBaseDir: api/
