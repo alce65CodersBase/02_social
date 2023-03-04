@@ -39,7 +39,7 @@ permissions:
 
 jobs:
   SonarCloud_api:
-    name: SonarCloud
+    name: SonarCloud Api
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -54,7 +54,7 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_API }}
         with:
           projectBaseDir: api/
         # Additional arguments for the sonarcloud scanner
@@ -72,7 +72,7 @@ jobs:
         # Adds more detail to both client and server-side analysis logs, activating DEBUG mode for the scanner, and adding client-side environment variables and system properties to the server-side log of analysis report processing.
         #-Dsonar.verbose= # optional, default is false
   SonarCloud_app:
-    name: SonarCloud
+    name: SonarCloud App
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -82,11 +82,11 @@ jobs:
         run: npm ci
       - name: Testing coverage
         run: npm run test:prod #Change for a valid npm script
-        working-directory: app/
+        working-directory: app
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_APP }}
         with:
-          projectBaseDir: app/
+          projectBaseDir: app

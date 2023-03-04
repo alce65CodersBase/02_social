@@ -9,7 +9,7 @@ on:
 
 jobs:
   Test_api:
-    name: Tests
+    name: Tests Api
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -21,7 +21,7 @@ jobs:
         run: npm run test:prod #Change for a valid npm script
         working-directory: api/
   Test_app:
-    name: Tests
+    name: Tests App
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
