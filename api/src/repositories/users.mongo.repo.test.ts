@@ -14,7 +14,7 @@ describe('Given UsersMongoRepo', () => {
 
   describe('When I use query', () => {
     beforeEach(() => {
-      (populate as jest.Mock).mockResolvedValue([]);
+      populate.mockResolvedValue([]);
       UserModel.find = jest.fn().mockReturnValue({
         populate: jest.fn().mockReturnValue({
           populate,
@@ -32,7 +32,7 @@ describe('Given UsersMongoRepo', () => {
 
   describe('When I use queryID', () => {
     beforeEach(() => {
-      (populate as jest.Mock).mockResolvedValue({ id: '1' });
+      populate.mockResolvedValue({ id: '1' });
       UserModel.findById = jest.fn().mockReturnValue({
         populate: jest.fn().mockReturnValue({
           populate,
@@ -46,7 +46,7 @@ describe('Given UsersMongoRepo', () => {
       expect(result).toEqual({ id: '1' });
     });
     test('Then it should throw an error if it has a NO valid id', () => {
-      (populate as jest.Mock).mockResolvedValue(null);
+      populate.mockResolvedValue(null);
       const id = '2';
       expect(async () => repo.queryId(id)).rejects.toThrow();
     });
@@ -54,7 +54,7 @@ describe('Given UsersMongoRepo', () => {
 
   describe('When I use search', () => {
     beforeEach(() => {
-      (populate as jest.Mock).mockResolvedValue([{ id: '1' }]);
+      populate.mockResolvedValue([{ id: '1' }]);
       UserModel.find = jest.fn().mockReturnValue({
         populate: jest.fn().mockReturnValue({
           populate,
@@ -85,7 +85,7 @@ describe('Given UsersMongoRepo', () => {
 
   describe('When I use update', () => {
     beforeEach(() => {
-      (populate as jest.Mock).mockResolvedValue({ id: '2' });
+      populate.mockResolvedValue({ id: '2' });
       UserModel.findByIdAndUpdate = jest.fn().mockReturnValue({
         populate: jest.fn().mockReturnValue({
           populate,
@@ -99,7 +99,7 @@ describe('Given UsersMongoRepo', () => {
       expect(result).toEqual({ id: '2' });
     });
     test('Then it should throw an error if it has a NO valid id', () => {
-      (populate as jest.Mock).mockResolvedValue(null);
+      populate.mockResolvedValue(null);
       const id = '2';
       expect(async () => repo.update({ id })).rejects.toThrow();
     });

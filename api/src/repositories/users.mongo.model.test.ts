@@ -9,7 +9,7 @@ describe('Given ', () => {
     test('Then it should ...', async () => {
       await dbConnect('dev');
       expect(spyModel).not.toHaveBeenCalled();
-      const [document] = await UserModel.find();
+      const [document] = await UserModel.find().exec();
       document.toJSON();
       expect(Schema.prototype.set).not.toHaveBeenCalled();
       mongoose.disconnect();

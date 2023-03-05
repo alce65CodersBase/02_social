@@ -23,7 +23,8 @@ export class UsersMongoRepo implements Repo<User> {
     debug('query');
     const data = await UserModel.find()
       .populate('friends', { friends: 0, enemies: 0 })
-      .populate('enemies', { friends: 0, enemies: 0 });
+      .populate('enemies', { friends: 0, enemies: 0 })
+      .exec();
     return data;
   }
 
@@ -31,7 +32,8 @@ export class UsersMongoRepo implements Repo<User> {
     debug('queryId');
     const data = await UserModel.findById(id)
       .populate('friends', { friends: 0, enemies: 0 })
-      .populate('enemies', { friends: 0, enemies: 0 });
+      .populate('enemies', { friends: 0, enemies: 0 })
+      .exec();
     if (!data) throw new HTTPError(404, 'Not found', 'Id not found in queryId');
     return data;
   }
@@ -40,7 +42,8 @@ export class UsersMongoRepo implements Repo<User> {
     debug('search');
     const data = await UserModel.find({ [query.key as string]: query.value })
       .populate('friends', { friends: 0, enemies: 0 })
-      .populate('enemies', { friends: 0, enemies: 0 });
+      .populate('enemies', { friends: 0, enemies: 0 })
+      .exec();
     return data;
   }
 
@@ -56,14 +59,15 @@ export class UsersMongoRepo implements Repo<User> {
       new: true,
     })
       .populate('friends', { friends: 0, enemies: 0 })
-      .populate('enemies', { friends: 0, enemies: 0 });
+      .populate('enemies', { friends: 0, enemies: 0 })
+      .exec();
     if (!data) throw new HTTPError(404, 'Not found', 'Id not found in update');
     return data;
   }
 
   async destroy(id: string): Promise<void> {
     debug('destroy');
-    const data = await UserModel.findByIdAndDelete(id);
+    const data = await UserModel.findByIdAndDelete(id).exec();
     if (!data)
       throw new HTTPError(404, 'Not found', 'Delete not posible: id not found');
   }
