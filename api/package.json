@@ -5,8 +5,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "cross-env DEBUG=W6* PORT=4500 node ./dist/index.js -w",
-    "start:mon": "cross-env DEBUG=W6* PORT=4500 nodemon ./dist/index.js",
+    "copy:public": "copyfiles -u 1 src/public/**/*.* dist",
+    "start": "cross-env DEBUG=Social* PORT=5500 node ./dist/index.js -w",
+    "start:mon": "cross-env DEBUG=Social* PORT=5500 nodemon ./dist/index.js",
+    "prebuild": "npm run copy:public",
     "build": "tsc -w",
     "test": "jest --watchAll --coverage",
     "test:prod": "jest --watchAll --coverage --watchAll=false --passWithNoTests"
@@ -22,6 +24,7 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "copyfiles": "^2.4.1",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "debug": "^4.3.4",
