@@ -3,8 +3,9 @@ import express, { NextFunction, Request, Response } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import createDebug from 'debug';
-import { __dirname } from './config.js';
+import { __dirname } from './helpers/files.js';
 import { CustomError } from './errors/errors.js';
+import { usersRouter } from './routers/users.router.js';
 
 const debug = createDebug('Social:app');
 export const app = express();
@@ -19,6 +20,8 @@ app.use(cors(corsOptions));
 
 debug({ __dirname });
 app.use(express.static(path.resolve(__dirname, 'public')));
+
+app.use('/users', usersRouter);
 
 app.use(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
