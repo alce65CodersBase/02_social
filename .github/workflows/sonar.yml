@@ -55,6 +55,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_API }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_CLUSTER: ${{ secrets.DB_CLUSTER }}
+          DB_NAME: ${{ secrets.DB_NAME }}
         with:
           projectBaseDir: api
         # Additional arguments for the sonarcloud scanner
