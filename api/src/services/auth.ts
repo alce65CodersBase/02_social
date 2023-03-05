@@ -26,7 +26,7 @@ export class Auth {
     return bcrypt.hash(value, salt);
   }
 
-  static compare(value: string, hash: string): Promise<Boolean> {
+  static compare(value: string, hash: string): Promise<boolean> {
     return bcrypt.compare(value, hash);
   }
 }
