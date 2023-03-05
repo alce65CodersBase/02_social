@@ -5,6 +5,7 @@ import { UsersController } from './users.controller';
 import { Auth } from '../services/auth.js';
 
 jest.mock('../services/auth.js');
+const mockPasswd = 'test';
 
 describe('Given register method from UsersController', () => {
   const mockRepo = {
@@ -34,7 +35,7 @@ describe('Given register method from UsersController', () => {
   describe('When there are NOT email in th body', () => {
     const req = {
       body: {
-        passwd: 'test',
+        passwd: mockPasswd,
       },
     } as Request;
     test('Then next should been called', async () => {
@@ -57,7 +58,7 @@ describe('Given register method from UsersController', () => {
     const req = {
       body: {
         email: 'test',
-        passwd: 'test',
+        passwd: mockPasswd,
       },
     } as Request;
     test('Then json should been called', async () => {
@@ -103,7 +104,7 @@ describe('Given login method from UsersController', () => {
       (mockRepo.search as jest.Mock).mockResolvedValue([]);
       req.body = {
         email: 'test',
-        passwd: 'test',
+        passwd: mockPasswd,
       };
       await controller.login(req, resp, next);
       expect(next).toHaveBeenCalled();
@@ -115,7 +116,7 @@ describe('Given login method from UsersController', () => {
       (mockRepo.search as jest.Mock).mockResolvedValue(['test']);
       req.body = {
         email: 'test',
-        passwd: 'test',
+        passwd: mockPasswd,
       };
       Auth.compare = jest.fn().mockResolvedValue(false);
       await controller.login(req, resp, next);
@@ -128,7 +129,7 @@ describe('Given login method from UsersController', () => {
       (mockRepo.search as jest.Mock).mockResolvedValue(['test']);
       req.body = {
         email: 'test',
-        passwd: 'test',
+        passwd: mockPasswd,
       };
       Auth.compare = jest.fn().mockResolvedValue(true);
       await controller.login(req, resp, next);
