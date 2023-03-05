@@ -146,6 +146,14 @@ package.json
   },
 ```
 
+#### folders
+
+/src - index.ts (con contenido)
+
+```ts
+  console.log('Sample')
+```
+
 ## Add CI/CD
 
 Nueva rama feature/config
