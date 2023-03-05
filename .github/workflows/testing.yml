@@ -1,0 +1,34 @@
+name: Testing Analysis
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+jobs:
+  Test_api:
+    name: Tests Api
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Install modules
+        run: npm ci
+      - name: Testing coverage
+        run: npm run test:prod #Change for a valid npm script
+        working-directory: api
+  Test_app:
+    name: Tests App
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Install modules
+        run: npm ci
+      - name: Testing coverage
+        run: npm run test:prod #Change for a valid npm script
+        working-directory: app
