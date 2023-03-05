@@ -26,7 +26,7 @@ app.use('/users', usersRouter);
 app.use(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (error: CustomError, _req: Request, resp: Response, _next: NextFunction) => {
-    debug('Soy el middleware de errores');
+    debug('Middleware de errores');
     const status = error.statusCode || 500;
     const statusMessage = error.statusMessage || 'Internal server error';
     resp.status(status);

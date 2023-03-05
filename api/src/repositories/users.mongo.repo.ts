@@ -1,8 +1,8 @@
 import { User } from '../entities/user';
 import { Repo } from './repo.interface';
 import createDebug from 'debug';
-import { UserModel } from './users.mongo.model';
-import { HTTPError } from '../errors/errors';
+import { UserModel } from './users.mongo.model.js';
+import { HTTPError } from '../errors/errors.js';
 const debug = createDebug('Social:repo:users');
 export class UsersMongoRepo implements Repo<User> {
   private static instance: UsersMongoRepo;

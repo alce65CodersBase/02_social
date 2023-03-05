@@ -4,7 +4,7 @@ import { User } from '../entities/user';
 import { Repo } from '../repositories/repo.interface';
 import { HTTPError } from '../errors/errors.js';
 import { Auth } from '../services/auth.js';
-import { BaseController } from './base.controller';
+import { BaseController } from './base.controller.js';
 import { PayloadToken } from '../interfaces/token';
 const debug = createDebug('Social:controller:users');
 export class UsersController extends BaseController<User> {
@@ -19,7 +19,8 @@ export class UsersController extends BaseController<User> {
       if (!req.body.email || !req.body.passwd)
         throw new HTTPError(401, 'Unauthorized', 'Invalid Email or password');
       req.body.passwd = await Auth.hash(req.body.passwd);
-      req.body.things = [];
+      req.body.friends = [];
+      req.body.enemies = [];
       const data = await this.repo.create(req.body);
       resp.status(201);
       resp.json({
@@ -56,5 +57,33 @@ export class UsersController extends BaseController<User> {
     } catch (error) {
       next(error);
     }
+  }
+
+  async addFriend(req: Request, resp: Response, next: NextFunction) {
+    debug('add/friends:patch');
+    resp.json({
+      results: [],
+    });
+  }
+
+  async deleteFriend(req: Request, resp: Response, next: NextFunction) {
+    debug('delete/friends:patch');
+    resp.json({
+      results: [],
+    });
+  }
+
+  addEnemy(req: Request, resp: Response, next: NextFunction) {
+    debug('add/enemy:patch');
+    resp.json({
+      results: [],
+    });
+  }
+
+  deleteEnemy(req: Request, resp: Response, next: NextFunction) {
+    debug('delete/enemy:patch');
+    resp.json({
+      results: [],
+    });
   }
 }
