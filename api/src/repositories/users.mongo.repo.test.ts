@@ -6,7 +6,10 @@ jest.mock('./users.mongo.model');
 describe('Given UsersMongoRepo', () => {
   // Arrange
   const repo = UsersMongoRepo.getInstance();
-  const populate = jest.fn();
+  const exec = jest.fn();
+  const populate = jest.fn().mockReturnValue({
+    exec,
+  });
 
   test('Then it could be instantiated', () => {
     expect(repo).toBeInstanceOf(UsersMongoRepo);
@@ -14,7 +17,7 @@ describe('Given UsersMongoRepo', () => {
 
   describe('When I use query', () => {
     beforeEach(() => {
-      populate.mockResolvedValue([]);
+      exec.mockResolvedValue([]);
       UserModel.find = jest.fn().mockReturnValue({
         populate: jest.fn().mockReturnValue({
           populate,
@@ -25,14 +28,14 @@ describe('Given UsersMongoRepo', () => {
       // Act
       const result = await repo.query();
       // Assert
-      expect(populate).toHaveBeenCalled();
+      expect(exec).toHaveBeenCalled();
       expect(result).toEqual([]);
     });
   });
 
   describe('When I use queryID', () => {
     beforeEach(() => {
-      populate.mockResolvedValue({ id: '1' });
+      exec.mockResolvedValue({ id: '1' });
       UserModel.findById = jest.fn().mockReturnValue({
         populate: jest.fn().mockReturnValue({
           populate,
@@ -42,11 +45,11 @@ describe('Given UsersMongoRepo', () => {
     test('Then it should return an object if it has a valid id', async () => {
       const id = '1';
       const result = await repo.queryId(id);
-      expect(populate).toHaveBeenCalled();
+      expect(exec).toHaveBeenCalled();
       expect(result).toEqual({ id: '1' });
     });
     test('Then it should throw an error if it has a NO valid id', () => {
-      populate.mockResolvedValue(null);
+      exec.mockResolvedValue(null);
       const id = '2';
       expect(async () => repo.queryId(id)).rejects.toThrow();
     });
@@ -54,7 +57,7 @@ describe('Given UsersMongoRepo', () => {
 
   describe('When I use search', () => {
     beforeEach(() => {
-      populate.mockResolvedValue([{ id: '1' }]);
+      exec.mockResolvedValue([{ id: '1' }]);
       UserModel.find = jest.fn().mockReturnValue({
         populate: jest.fn().mockReturnValue({
           populate,
@@ -64,7 +67,7 @@ describe('Given UsersMongoRepo', () => {
     test('Then it should return an array empty or with the results', async () => {
       const id = '1';
       const result = await repo.search({ id });
-      expect(populate).toHaveBeenCalled();
+      expect(exec).toHaveBeenCalled();
       expect(result).toEqual([{ id: '1' }]);
     });
   });
@@ -85,7 +88,7 @@ describe('Given UsersMongoRepo', () => {
 
   describe('When I use update', () => {
     beforeEach(() => {
-      populate.mockResolvedValue({ id: '2' });
+      exec.mockResolvedValue({ id: '2' });
       UserModel.findByIdAndUpdate = jest.fn().mockReturnValue({
         populate: jest.fn().mockReturnValue({
           populate,
@@ -95,27 +98,31 @@ describe('Given UsersMongoRepo', () => {
     test('Then it should return an object with the updated item if it has a valid id', async () => {
       const id = '1';
       const result = await repo.update({ id });
-      expect(populate).toHaveBeenCalled();
+      expect(exec).toHaveBeenCalled();
       expect(result).toEqual({ id: '2' });
     });
     test('Then it should throw an error if it has a NO valid id', () => {
-      populate.mockResolvedValue(null);
+      exec.mockResolvedValue(null);
       const id = '2';
       expect(async () => repo.update({ id })).rejects.toThrow();
     });
   });
 
   describe('When I use destroy', () => {
-    test('Then it should return void if it has a valid id', async () => {
+    beforeEach(() => {
       UserModel.findByIdAndDelete = jest.fn().mockReturnValue({
-        id: 1,
+        exec,
       });
+    });
+
+    test('Then it should return void if it has a valid id', async () => {
+      exec.mockResolvedValue({ id: 1 });
       const id = '1';
       await repo.destroy(id);
       expect(UserModel.findByIdAndDelete).toHaveBeenCalled();
     });
     test('Then it should throw an error if it has a NO valid id', () => {
-      UserModel.findByIdAndDelete = jest.fn().mockReturnValue(null);
+      exec.mockReturnValue(null);
       const id = '2';
       expect(async () => repo.destroy(id)).rejects.toThrow();
     });
