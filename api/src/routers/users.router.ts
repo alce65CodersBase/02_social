@@ -1,34 +1,60 @@
 import { Router } from 'express';
 import createDebug from 'debug';
-// Temp
-// import { UsersController } from '../controllers/users.controller.js';
-// import { UsersMongoRepo } from '../repository/users.mongo.repo.js';
-// import { logged } from '../interceptors/logged.js';
+import { UsersController } from '../controllers/users.controller.js';
+import { UsersMongoRepo } from '../repositories/users.mongo.repo.js';
+import { AuthInterceptor } from '../interceptors/auth.interceptor.js';
+
 const debug = createDebug('social:router:users');
 
 // eslint-disable-next-line new-cap
 export const usersRouter = Router();
 debug('loaded');
 
-// TEMP
-// const repo = UsersMongoRepo.getInstance();
-// const controller = new UsersController(repo);
+const repo = UsersMongoRepo.getInstance();
+const controller = new UsersController(repo);
+const interceptor = new AuthInterceptor(repo);
 
-usersRouter.get('/', () => {
-  // Controller
-});
-usersRouter.post('/register', () => {
-  // // Controller
-});
-usersRouter.post('/login', () => {
-  // // Controller
-});
+usersRouter.get(
+  '/',
+  interceptor.logged.bind(interceptor),
+  controller.getAll.bind(controller)
+);
+usersRouter.get(
+  '/:id',
+  interceptor.logged.bind(interceptor),
+  controller.get.bind(controller)
+);
+// Add user
+usersRouter.post('/register', controller.register.bind(controller));
+usersRouter.post('/login', controller.login.bind(controller));
 
-// TEMP
-// usersRouter.get('/', controller.getAll.bind(controller));
-// usersRouter.post('/register', controller.register.bind(controller));
-// usersRouter.post('/login', controller.login.bind(controller));
-// Add favorites management
-// usersRouter.patch('/addfav/:id', controller.addFav.bind(controller));
-// usersRouter.patch('/changefav/:id', controller.changeFav.bind(controller));
-// usersRouter.patch('/deletefav/:id', controller.deleteFav.bind(controller));
+usersRouter.patch(
+  '/role/:id',
+  interceptor.logged.bind(interceptor),
+  interceptor.admin.bind(interceptor),
+  controller.changeRole.bind(controller)
+);
+
+// Add friends & enemies management
+usersRouter.patch(
+  '/add/friend/:id',
+  interceptor.logged.bind(interceptor),
+  controller.addRelation.bind(controller)
+);
+
+usersRouter.patch(
+  '/add/enemy/:id',
+  interceptor.logged.bind(interceptor),
+  controller.addRelation.bind(controller)
+);
+
+usersRouter.patch(
+  '/delete/friend/:id',
+  interceptor.logged.bind(interceptor),
+  controller.deleteRelation.bind(controller)
+);
+usersRouter.patch(
+  '/delete/enemy/:id',
+  interceptor.logged.bind(interceptor),
+  controller.deleteRelation.bind(controller)
+);
