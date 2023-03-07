@@ -10,7 +10,7 @@ debug('Loaded Static class');
 
 const salt = 10;
 
-export class Auth {
+export abstract class Auth {
   static createJWT(payload: PayloadToken) {
     return jwt.sign(payload, config.jwtSecret as string);
   }
