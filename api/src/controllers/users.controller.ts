@@ -63,14 +63,20 @@ export class UsersController extends BaseController<User> {
 
   async addRelation(req: RequestPlus, resp: Response, next: NextFunction) {
     try {
-      debug('add/friends:patch');
-      const newFriend: User = await this.checkNewItem(req);
-      const actualUser = await this.repo.queryId(req.info?.id as string);
-      if (actualUser.friends.find((item) => item.id === newFriend.id)) {
+      debug(`${req.url}:patch`);
+      const target = req.url.split('/')[1];
+      const newRelation: User = await this.checkNewItem(req);
+      const actualUser: { [key: string]: string | User[] } =
+        await this.repo.queryId(req.info?.id as string);
+      if (
+        (actualUser[target] as User[]).find(
+          (item) => item.id === newRelation.id
+        )
+      ) {
         throw new HTTPError(401, 'Invalid', 'New item still present');
       }
 
-      actualUser.friends.push();
+      (actualUser[target] as User[]).push();
       await this.repo.update(actualUser);
       resp.json({
         results: [actualUser],
@@ -82,58 +88,19 @@ export class UsersController extends BaseController<User> {
 
   async deleteRelation(req: RequestPlus, resp: Response, next: NextFunction) {
     try {
-      debug('delete/friends:patch');
-      const removeFriend: User = await this.checkNewItem(req);
-      const actualUser = await this.repo.queryId(req.info?.id as string);
-      const itemIndex = actualUser.friends.findIndex(
-        (item) => item.id === removeFriend.id
+      debug(`${req.url}:patch`);
+      const target = req.url.split('/')[1];
+      const removeRelation: User = await this.checkNewItem(req);
+      const actualUser: { [key: string]: string | User[] } =
+        await this.repo.queryId(req.info?.id as string);
+      const itemIndex = (actualUser[target] as User[]).findIndex(
+        (item) => item.id === removeRelation.id
       );
       if (itemIndex < 0) {
         throw new HTTPError(401, 'Invalid', 'Item to remove NOT present');
       }
 
-      actualUser.friends.slice(itemIndex, 1);
-      await this.repo.update(actualUser);
-      resp.json({
-        results: [actualUser],
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async addEnemy(req: RequestPlus, resp: Response, next: NextFunction) {
-    try {
-      debug('add/enemies:patch');
-      const newEnemy: User = await this.checkNewItem(req);
-      const actualUser = await this.repo.queryId(req.info?.id as string);
-      if (actualUser.enemies.find((item) => item.id === newEnemy.id)) {
-        throw new HTTPError(401, 'Invalid', 'New item still present');
-      }
-
-      actualUser.enemies.push();
-      await this.repo.update(actualUser);
-      resp.json({
-        results: [actualUser],
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async deleteEnemy(req: RequestPlus, resp: Response, next: NextFunction) {
-    try {
-      debug('delete/enemies:patch');
-      const removeEnemy: User = await this.checkNewItem(req);
-      const actualUser = await this.repo.queryId(req.info?.id as string);
-      const itemIndex = actualUser.enemies.findIndex(
-        (item) => item.id === removeEnemy.id
-      );
-      if (itemIndex < 0) {
-        throw new HTTPError(401, 'Invalid', 'Item to remove NOT present');
-      }
-
-      actualUser.friends.slice(itemIndex, 1);
+      (actualUser[target] as User[]).splice(itemIndex, 1);
       await this.repo.update(actualUser);
       resp.json({
         results: [actualUser],
