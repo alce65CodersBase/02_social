@@ -29,7 +29,7 @@ usersRouter.post('/register', controller.register.bind(controller));
 usersRouter.post('/login', controller.login.bind(controller));
 
 usersRouter.patch(
-  '/role/:id',
+  '/role/:id:/:role',
   interceptor.logged.bind(interceptor),
   interceptor.admin.bind(interceptor),
   controller.changeRole.bind(controller)

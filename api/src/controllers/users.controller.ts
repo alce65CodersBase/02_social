@@ -111,7 +111,22 @@ export class UsersController extends BaseController<User> {
   }
 
   async changeRole(req: RequestPlus, resp: Response, next: NextFunction) {
-    // Change role
+    try {
+      if (!req.params.id || !req.params.role)
+        throw new HTTPError(
+          400,
+          'Bad request',
+          'Not valid id or role in the url'
+        );
+      const user = await this.repo.queryId(req.params.id);
+      user.role = req.params.role;
+      const actualUser = await this.repo.update(user);
+      resp.json({
+        results: [actualUser],
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 
   private async checkNewItem(req: RequestPlus) {
