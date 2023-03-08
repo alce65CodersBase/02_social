@@ -6,6 +6,7 @@ import { HTTPError } from '../errors/errors.js';
 import { Auth } from '../services/auth.js';
 import { BaseController } from './base.controller.js';
 import { PayloadToken } from '../interfaces/token';
+import { RequestPlus } from '../interfaces/request';
 const debug = createDebug('Social:controller:users');
 export class UsersController extends BaseController<User> {
   constructor(public repo: Repo<User>) {
@@ -53,37 +54,96 @@ export class UsersController extends BaseController<User> {
       resp.status(202);
       resp.json({
         token,
+        results: [data[0]],
       });
     } catch (error) {
       next(error);
     }
   }
 
-  async addFriend(req: Request, resp: Response, next: NextFunction) {
-    debug('add/friends:patch');
-    resp.json({
-      results: [],
-    });
+  async addRelation(req: RequestPlus, resp: Response, next: NextFunction) {
+    try {
+      debug(`${req.url}:patch`);
+      const target = req.url.split('/')[1];
+      const newRelation: User = await this.checkNewItem(req);
+      const actualUser: { [key: string]: string | User[] } =
+        await this.repo.queryId(req.info?.id as string);
+      if (
+        (actualUser[target] as User[]).find(
+          (item) => item.id === newRelation.id
+        )
+      ) {
+        throw new HTTPError(401, 'Invalid', 'New item still present');
+      }
+
+      (actualUser[target] as User[]).push();
+      await this.repo.update(actualUser);
+      resp.json({
+        results: [actualUser],
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 
-  async deleteFriend(req: Request, resp: Response, next: NextFunction) {
-    debug('delete/friends:patch');
-    resp.json({
-      results: [],
-    });
+  async deleteRelation(req: RequestPlus, resp: Response, next: NextFunction) {
+    try {
+      debug(`${req.url}:patch`);
+      const target = req.url.split('/')[1];
+      const removeRelation: User = await this.checkNewItem(req);
+      const actualUser: { [key: string]: string | User[] } =
+        await this.repo.queryId(req.info?.id as string);
+      const itemIndex = (actualUser[target] as User[]).findIndex(
+        (item) => item.id === removeRelation.id
+      );
+      if (itemIndex < 0) {
+        throw new HTTPError(401, 'Invalid', 'Item to remove NOT present');
+      }
+
+      (actualUser[target] as User[]).splice(itemIndex, 1);
+      await this.repo.update(actualUser);
+      resp.json({
+        results: [actualUser],
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 
-  addEnemy(req: Request, resp: Response, next: NextFunction) {
-    debug('add/enemy:patch');
-    resp.json({
-      results: [],
-    });
+  async changeRole(req: RequestPlus, resp: Response, next: NextFunction) {
+    try {
+      if (!req.params.id || !req.params.role)
+        throw new HTTPError(
+          400,
+          'Bad request',
+          'Not valid id or role in the url'
+        );
+      const user = await this.repo.queryId(req.params.id);
+      user.role = req.params.role;
+      const actualUser = await this.repo.update(user);
+      resp.json({
+        results: [actualUser],
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 
-  deleteEnemy(req: Request, resp: Response, next: NextFunction) {
-    debug('delete/enemy:patch');
-    resp.json({
-      results: [],
-    });
+  private async checkNewItem(req: RequestPlus) {
+    const newFriend: User = req.body;
+    if (!newFriend || !newFriend.id) {
+      throw new HTTPError(
+        401,
+        'Bad request',
+        'Invalid user data in the request'
+      );
+    }
+
+    await this.repo.queryId(newFriend.id);
+    if (!req.info?.id) {
+      throw new HTTPError(401, 'Not authorized', 'Invalid data in the token');
+    }
+
+    return newFriend;
   }
 }

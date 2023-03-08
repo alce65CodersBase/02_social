@@ -2,7 +2,7 @@ import { Response, Request, NextFunction } from 'express';
 import createDebug from 'debug';
 import { Repo } from '../repositories/repo.interface';
 
-const debug = createDebug('Social:controller:users');
+const debug = createDebug('Social:controller:base');
 export abstract class BaseController<T> {
   constructor(public repo: Repo<T>) {
     debug('Instantiate');
