@@ -29,4 +29,16 @@ export class AuthInterceptor {
       next(error);
     }
   }
+
+  admin(req: RequestPlus, resp: Response, next: NextFunction) {
+    try {
+      if (!req.info)
+        throw new HTTPError(401, 'Not autorithed', 'Not info about user');
+      if (req.info.role !== 'admin')
+        throw new HTTPError(401, 'Not autorithed', 'Not admin role');
+      next();
+    } catch (error) {
+      next(error);
+    }
+  }
 }
