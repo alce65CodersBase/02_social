@@ -17,6 +17,7 @@ export const asyncLogin = createAsyncThunk<
 >('user/login', async ({ user, repo }) => {
   const response = await repo.loginUser(user);
   console.log(response);
+  localStorage.setItem('Social', JSON.stringify({ token: response.token }));
   // The value we return becomes the `fulfilled` action payload
   return response;
 });
