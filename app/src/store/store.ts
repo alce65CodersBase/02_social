@@ -9,6 +9,7 @@ export const appStore = configureStore({
 
 export type AppDispatch = typeof appStore.dispatch;
 export type RootState = ReturnType<typeof appStore.getState>;
+export type AppStore = typeof appStore;
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,
   RootState,
