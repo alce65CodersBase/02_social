@@ -1,6 +1,7 @@
 import { SyntheticEvent } from 'react';
 import { RegisterData } from '../../models/user';
 import { UserApiRepo } from '../../services/users.api.repo';
+import { storeFile } from '../../services/fire.storage';
 
 export function Register() {
   const repo = new UserApiRepo();
@@ -15,8 +16,11 @@ export function Register() {
       passwd: (formElement[3] as HTMLFormElement).value,
     };
 
-    repo.createUser({ ...formData, enemies: [], friends: [] });
-    formElement.reset();
+    const file: File = (formElement[4] as HTMLFormElement).files[0];
+    console.dir(file);
+    storeFile(file);
+    //repo.createUser({ ...formData, enemies: [], friends: [] });
+    //formElement.reset();
   };
 
   return (
@@ -36,6 +40,10 @@ export function Register() {
       <div className="formGroup">
         <label htmlFor="passwd">Password</label>
         <input type="password" id="passwd" name="passwd" />
+      </div>
+      <div className="formGroup">
+        <label htmlFor="userImg">Photo</label>
+        <input type="file" name="userImg" id="userImg" />
       </div>
       <div>
         <button type="submit">Register</button>

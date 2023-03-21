@@ -14,6 +14,12 @@ export function App() {
   const dispatch = useDispatch<AppDispatch>();
   const [view, setView] = useState<ToShow>('none');
 
+  const lsData = localStorage.getItem('Social');
+
+  if (lsData) {
+    JSON.parse(lsData);
+  }
+
   const handleClick = (toShow: ToShow) => {
     setView(toShow);
   };
